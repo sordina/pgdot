@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ ! "$1" ]
+then
+	echo "Usage: pgdot [--schema=MY_SCHEMA] postgres://postgres@localhost/MY_DB"
+	exit 1
+fi
+
+if [ -d ~/code/pgdot ]
+then
+	echo "pgdot project already exists" 1>&2
+else
+	cd ~/code || exit 1
+	git clone https://github.com/sordina/pgdot.git
+fi
+
+cd ~/code/pgdot || exit 1
+
+pg_dump --schema-only "$@" | docker-build-and-run-no-env | dotshow
